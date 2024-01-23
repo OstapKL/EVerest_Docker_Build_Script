@@ -1,32 +1,19 @@
 FROM ubuntu:22.04
 
 SHELL ["/bin/bash", "-c"]
-
+RUN apt update
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
-COPY update.sh /root
-RUN chmod +x /root/update.sh
-RUN /root/update.sh
+RUN apt-get install -y python3-pip git rsync wget cmake doxygen graphviz \
+build-essential clang-tidy cppcheck openjdk-17-jdk npm docker docker-compose \
+libboost-all-dev nodejs libssl-dev libsqlite3-dev clang-format curl rfkill \
+libpcap-dev libevent-dev pkg-config libcap-dev dos2unix
 
-COPY build-git.sh /root
-RUN chmod +x /root/build-git.sh
-RUN /root/build-git.sh
-
-RUN git config --global http.version HTTP/1.1
-RUN git config --global http.sslBackend openssl
-RUN git config --global https.sslBackend openssl
-
-COPY create-env.sh /root
-RUN chmod +x /root/create-env.sh
+COPY --chmod=755 *.sh /root/
+RUN dos2unix /root/*.sh
 RUN /root/create-env.sh
-
-COPY build-iso15118.sh /root
-RUN chmod +x /root/build-iso15118.sh
 RUN /root/build-iso15118.sh
-
-COPY build-everest.sh /root
-RUN chmod +x /root/build-everest.sh
 RUN /root/build-everest.sh
 
 CMD ["ls","-l"]

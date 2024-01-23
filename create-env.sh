@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source /root/config.sh
+
+python3 -m pip install --upgrade pip setuptools wheel jstyleson jsonschema
+
 echo **************************
 echo * Cloning GIT repository *
 echo **************************
@@ -10,13 +14,13 @@ python3 -m pip install .
 echo **************************
 echo *   EDM-related steps    *
 echo **************************
-export CPM_SOURCE_CACHE=$HOME/.cache/CPM
-export PATH=$PATH:/home/$(whoami)/.local/bin
 
-mkdir -p /home/$(whoami)/everest-dev
-edm init --workspace /home/$(whoami)/everest-dev
-edm init main --workspace /home/$(whoami)/everest-dev
+mkdir -p "$EVEREST_DEV"
+edm init main --workspace "$EVEREST_DEV"
 
-cd /home/$(whoami)/everest-dev/everest-utils/ev-dev-tools
+echo **************************
+echo *   EV_CLI steps         *
+echo **************************
+
+cd "$EVEREST_DEV/everest-utils/ev-dev-tools"
 python3 -m pip install .
-
